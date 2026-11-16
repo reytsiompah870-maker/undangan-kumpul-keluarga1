@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Kumpul Keluarga - Victor James Lima, S. Tr. Par.</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Tipografi */
+        .font-script { font-family: 'Great Vibes', cursive; }
+        .font-classic { font-family: 'Cormorant Garamond', serif; }
+        .font-ui { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Latar Belakang Gradien Cyan Lembut dengan Pola Halus */
+        body {
+            background-color: #b8f1f8;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(255, 255, 255, 0.75) 0px, transparent 50%),
+                radial-gradient(at 85% 85%, rgba(103, 232, 249, 0.45) 0px, transparent 50%),
+                linear-gradient(135deg, #d6f9fd 0%, #aeeaf4 100%);
+            color: #0c1e2c;
+            overflow-x: hidden;
+        }
+
+        /* --- 1. ANIMASI SAMPUL AMPLOP PEMBUKA --- */
+        #envelopeOverlay {
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.7s;
+        }
+        #envelopeOverlay.opened {
+            opacity: 0;
+            transform: scale(1.08) translateY(-30px);
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* --- 2. EFEK HOVER & CLICK PADA TOMBOL (GLOW + SPRING + SHINE) --- */
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.28s ease,
+                        background-color 0.25s ease,
+                        border-color 0.25s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Hover: Terangkat & berpendar lembut */
+        .btn-animated:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 14px 28px -8px rgba(8, 145, 178, 0.35), 0 0 0 2px rgba(34, 211, 238, 0.4);
+        }
+
+        /* Active / Click: Memantul ke dalam */
+        .btn-animated:active {
+            transform: translateY(2px) scale(0.95);
+            box-shadow: 0 4px 12px -2px rgba(8, 145, 178, 0.25);
+            transition-duration: 0.08s;
+        }
+
+        /* Animasi Ikon di dalam tombol saat hover */
+        .btn-animated .btn-icon {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-animated:hover .btn-icon {
+            transform: rotate(-10deg) scale(1.18);
+        }
+
+        /* --- 3. EFEK HOVER & CLICK PADA TAUTAN (PILL EXPAND + SLIDE) --- */
+        .link-animated {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .link-animated:hover {
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #0e7490;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px -4px rgba(14, 116, 144, 0.2);
+        }
+
+        .link-animated:active {
+            transform: scale(0.93);
+            background-color: rgba(207, 250, 254, 0.95);
+        }
+
+        /* Garis bawah animasi untuk tautan teks inline */
+        .link-underline {
+            position: relative;
+            display: inline-block;
+            transition: color 0.2s ease, transform 0.15s ease;
+            cursor: pointer;
+        }
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #0891b2, #0f172a);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .link-underline:hover {
+            color: #0891b2;
+        }
+        .link-underline:hover::after {
+            transform: scaleX(1);
+        }
+        .link-underline:active {
+            transform: scale(0.95);
+        }
+
+        /* --- 4. PARTIKEL KLIK (CLICK BURST FEEDBACK) --- */
+        .click-particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 9999;
+            animation: particleBurst 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes particleBurst {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* --- 5. ANIMASI STAGGER KONTEN UTAMA --- */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animasi Denyut Halus untuk Segel Amplop */
+        @keyframes pulseSeal {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.35); }
+            50% { box-shadow: 0 0 0 12px rgba(15, 23, 42, 0); }
+        }
+        .seal-pulse {
+            animation: pulseSeal 2.2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-classic selection:bg-cyan-300 selection:text-slate-900">
+
+    <!-- LAYAR SAMPUL AMPLOP INTERAKTIF (COVER) -->
+    <div id="envelopeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-[#cffafe] via-[#a5f3fc] to-[#67e8f9]">
+        <!-- Dekorasi Sudut Layar Sampul -->
+        <div class="max-w-md w-full bg-white/75 backdrop-blur-md border-2 border-slate-900/80 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden">
+            
+            <!-- Ornamen Atas -->
+            <div class="flex justify-center mb-4">
+                <svg class="w-36 h-8 text-slate-900" viewBox="0 0 200 40" fill="none">
+                    <path d="M10 20H75M125 20H190" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M100 5L110 20L100 35L90 20L100 5Z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="100" cy="20" r="3" fill="currentColor"/>
+                    <circle cx="75" cy="20" r="2.5" fill="currentColor"/>
+                    <circle cx="125" cy="20" r="2.5" fill="currentColor"/>
+                </svg>
+            </div>
+
+            <p class="font-ui text-xs uppercase tracking-[0.25em] text-cyan-900 font-semibold mb-1">
+                Undangan
+            </p>
+            <h1 class="font-script text-6xl sm:text-7xl text-slate-950 my-2">
+                Kumpul Keluarga
+            </h1>
+            <p class="text-base font-semibold text-slate-800">
+                Selasa, 24 November 2026
+            </p>
+
+            <!-- Kotak Kepada Yth pada Sampul -->
+            <div class="my-6 py-4 px-5 rounded-2xl bg-[#cbf6fa]/80 border-2 border-slate-900 shadow-inner">
+                <p class="text-xs text-slate-700 mb-1">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+                <p id="coverGuestName" class="text-lg sm:text-xl font-bold text-slate-950">
+                    Keluarga Besar & Kerabat
+                </p>
+                <button type="button" onclick="editGuestNamePrompt(event)" class="link-underline font-ui text-xs text-cyan-800 font-semibold mt-1.5">
+                    ✎ Ubah Nama Penerima
+                </button>
+            </div>
+
+            <!-- Tombol Buka Undangan dengan Animasi Hover & Click -->
+            <button type="button" 
+                    onclick="openInvitation(event)"
+                    class="btn-animated seal-pulse w-full py-4 px-6 rounded-2xl bg-slate-900 hover:bg-cyan-950 text-white font-ui font-semibold text-sm sm:text-base flex items-center justify-center gap-3 shadow-xl cursor-pointer">
+                <svg class="btn-icon w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/>
+                </svg>
+                <span>Buka Undangan</span>
+            </button>
+
+        
+        </div>
+    </div>
+
+    <!-- KONTEN UTAMA UNDANGAN -->
+    <main class="max-w-3xl mx-auto py-8 px-4 sm:py-12 sm:px-6 space-y-6">
+
+        <!-- Navigasi Atas Cepat -->
+        <nav class="reveal-item flex flex-wrap items-center justify-between gap-2 bg-white/60 backdrop-blur-md border border-white/80 rounded-2xl px-4 py-2.5 shadow-sm font-ui text-xs">
+            <button type="button" onclick="reopenCover(event)" class="link-animated font-semibold text-slate-800 gap-1.5">
+                <span>← Sampul</span>
+            </button>
+            <div class="flex items-center gap-1 sm:gap-2">
+                <a href="#detail-acara" onclick="smoothScrollTo(event, 'detail-acara')" class="link-animated font-medium text-slate-700">
+                    Waktu & Lokasi
+                </a>
+            </div>
+        </nav>
+
+        <!-- KARTU UNDANGAN UTAMA -->
+        <article class="reveal-item relative bg-[#d4f8fc]/90 backdrop-blur-md border-2 border-slate-900/20 rounded-3xl p-6 sm:p-12 shadow-xl overflow-hidden">
+            
+            <!-- Bingkai Ornamen Sudut -->
+            <svg class="absolute top-3 left-3 w-14 h-14 sm:w-20 sm:h-20 text-slate-900/85 pointer-events-none" viewBox="0 0 100 100" fill="none">
+                <path d="M10 90V22C10 15.3726 15.3726 10 22 10H90" stroke="currentColor" stroke-width="2"/>
+                <path d="M18 72V25C18 21.134 21.134 18 25 18H72" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M10 40C20 40 28 32 28 22C28 16 23 12 18 14C14 16 15 22 20 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M40 10C40 20 32 28 22 28C16 28 12 23 14 18C16 14 22 15 22 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="3" fill="currentColor"/>
+            </svg>
+            <svg class="absolute top-3 right-3 w-14 h-14 sm:w-20 sm:h-20 text-slate-900/85 pointer-events-none scale-x-[-1]" viewBox="0 0 100 100" fill="none">
+                <path d="M10 90V22C10 15.3726 15.3726 10 22 10H90" stroke="currentColor" stroke-width="2"/>
+                <path d="M18 72V25C18 21.134 21.134 18 25 18H72" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M10 40C20 40 28 32 28 22C28 16 23 12 18 14C14 16 15 22 20 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M40 10C40 20 32 28 22 28C16 28 12 23 14 18C16 14 22 15 22 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="3" fill="currentColor"/>
+            </svg>
+            <svg class="absolute bottom-3 left-3 w-14 h-14 sm:w-20 sm:h-20 text-slate-900/85 pointer-events-none scale-y-[-1]" viewBox="0 0 100 100" fill="none">
+                <path d="M10 90V22C10 15.3726 15.3726 10 22 10H90" stroke="currentColor" stroke-width="2"/>
+                <path d="M18 72V25C18 21.134 21.134 18 25 18H72" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M10 40C20 40 28 32 28 22C28 16 23 12 18 14C14 16 15 22 20 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M40 10C40 20 32 28 22 28C16 28 12 23 14 18C16 14 22 15 22 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="3" fill="currentColor"/>
+            </svg>
+            <svg class="absolute bottom-3 right-3 w-14 h-14 sm:w-20 sm:h-20 text-slate-900/85 pointer-events-none scale-[-1]" viewBox="0 0 100 100" fill="none">
+                <path d="M10 90V22C10 15.3726 15.3726 10 22 10H90" stroke="currentColor" stroke-width="2"/>
+                <path d="M18 72V25C18 21.134 21.134 18 25 18H72" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M10 40C20 40 28 32 28 22C28 16 23 12 18 14C14 16 15 22 20 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M40 10C40 20 32 28 22 28C16 28 12 23 14 18C16 14 22 15 22 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="3" fill="currentColor"/>
+            </svg>
+
+            <!-- Header Undangan -->
+            <header class="text-center pt-4 pb-6 border-b border-slate-900/15">
+                <h2 class="font-script text-6xl sm:text-7xl text-slate-950 leading-none">
+                    Undangan
+                </h2>
+                <p class="font-script text-3xl sm:text-4xl text-slate-800 mt-2">
+                    Kumpul Keluarga
+                </p>
+                <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 border border-slate-900/15 text-xs sm:text-sm font-semibold text-slate-900">
+                    <span>Kepada Yth:</span>
+                    <span id="mainGuestName" class="text-cyan-900 font-bold">Keluarga Besar & Kerabat</span>
+                </div>
+            </header>
+
+            <!-- Isi Utama -->
+            <div class="text-center py-8 space-y-6">
+                <p class="text-base sm:text-lg text-slate-800 max-w-lg mx-auto leading-relaxed">
+                    Dengan penuh kasih dan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara<br>
+                    <strong class="font-bold text-slate-950 text-lg sm:text-xl">Kumpul Keluarga</strong>
+                </p>
+
+                <!-- Sorotan Nama -->
+                <div class="py-6 px-4 rounded-2xl bg-gradient-to-b from-white/70 to-white/40 border border-white shadow-sm">
+                    <h3 class="text-2xl sm:text-4xl font-bold text-slate-950 tracking-tight">
+                        Victor James Lima, S. Tr. Par.
+                    </h3>
+                    <p class="text-sm sm:text-base text-slate-800 mt-2.5 leading-relaxed">
+                        Anak kedua Putra pertama dari tiga bersaudara<br>
+                        Pasangan <strong class="font-bold">Bpk. Roni Lima</strong> dan <strong class="font-bold">Ibu Yuliana Lima - Polin.</strong>
+                    </p>
+                </div>
+
+                <!-- Detail Pelaksanaan -->
+                <div id="detail-acara" class="pt-2 space-y-4">
+                    <p class="text-base text-slate-800">Yang akan dilaksanakan pada:</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-ui">
+                        <!-- Kartu Hari/Tanggal -->
+                        <div class="bg-white/65 rounded-2xl p-4 border border-cyan-500/25 hover:bg-white/90 transition-colors">
+                            <span class="text-[11px] uppercase tracking-wider font-bold text-cyan-800 block">Hari / Tanggal</span>
+                            <p class="text-sm font-bold text-slate-950 mt-1">Selasa, 24 November 2026</p>
+                        </div>
+
+                        <!-- Kartu Waktu -->
+                        <div class="bg-white/65 rounded-2xl p-4 border border-cyan-500/25 hover:bg-white/90 transition-colors">
+                            <span class="text-[11px] uppercase tracking-wider font-bold text-cyan-800 block">Waktu</span>
+                            <p class="text-sm font-bold text-slate-950 mt-1">18.00 WITA - Selesai</p>
+                        </div>
+
+                        <!-- Kartu Tempat -->
+                        <div class="bg-white/65 rounded-2xl p-4 border border-cyan-500/25 hover:bg-white/90 transition-colors">
+                            <span class="text-[11px] uppercase tracking-wider font-bold text-cyan-800 block">Tempat</span>
+                            <p class="text-sm font-bold text-slate-950 mt-1">Rumah Ibu Yacoba Ballo - Loak</p>
+                            <p class="text-xs text-slate-700 mt-0.5">Jl. Pisang, RT 026/RW009 - Oebobo</p>
+                        </div>
+                    </div>
+
+                    <!-- Tautan Interaktif Lokasi & Salin -->
+                    <div class="flex flex-wrap items-center justify-center gap-3 pt-2 font-ui text-xs sm:text-sm font-semibold">
+                        <a href="https://maps.google.com/?q=Jl.+Pisang+Oebobo+Kupang" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           onclick="triggerParticleBurst(event)"
+                           class="link-animated bg-white/75 text-cyan-900 border border-cyan-600/30 gap-2">
+                            <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Lihat Peta Lokasi</span>
+                        </a>
+
+                        <button type="button" 
+                                onclick="copyLocationText(event)"
+                                class="link-animated bg-white/75 text-slate-800 border border-slate-400/40 gap-2">
+                            <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                            <span>Salin Alamat</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Penutup Undangan -->
+            <footer class="text-center pt-6 pb-4 border-t border-slate-900/15 space-y-3">
+                <p class="text-base text-slate-800">
+                    Atas kehadiran, kasih, dukungan, dan doanya,<br>
+                    kami mengucapkan:
+                </p>
+                <p class="text-lg sm:text-xl font-bold text-slate-950">
+                    Terima Kasih dan Tuhan Yesus<br>
+                    Memberkati
+                </p>
+                <div class="pt-3">
+                    <p class="text-sm text-slate-700">Hormat Kami yang mengundang:</p>
+                    <p class="text-base sm:text-lg font-bold text-slate-950 mt-0.5">
+                        Bpk. Roni Lima - Ibu Yuliana Lima - Polin
+                    </p>
+                </div>
+            </footer>
+        </article>
+
+        <!-- Bar Aksi Bawah -->
+        <div class="reveal-item flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-2xl p-4 font-ui text-xs">
+            <span id="daysRemaining" class="font-semibold text-cyan-950">
+                Menghitung waktu acara...
+            </span>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="downloadCalendar(event)" class="link-animated bg-white text-slate-800 font-semibold">
+                    📅 Simpan ke Kalender
+                </button>
+                <button type="button" onclick="copyShareLink(event)" class="link-animated bg-slate-900 text-white hover:bg-cyan-900 hover:text-white font-semibold">
+                    🔗 Bagikan
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- DIALOG UBAH NAMA PENERIMA -->
+    <div id="nameDialog" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs font-ui">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-cyan-200">
+            <h3 class="text-base font-bold text-slate-900 mb-1">Nama Penerima Undangan</h3>
+            <p class="text-xs text-slate-600 mb-3">Tulis nama Bapak/Ibu/Saudara/i:</p>
+            <input type="text" id="nameInputField" placeholder="Contoh: Keluarga Bpk. Anton" 
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-cyan-600 focus:ring-2 focus:ring-cyan-200 outline-none text-sm mb-4">
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeNameDialog()" class="btn-animated px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" onclick="applyGuestName(event)" class="btn-animated px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold cursor-pointer">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFIKASI TOAST -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 translate-y-20 opacity-0 transition-all duration-300 pointer-events-none font-ui">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-cyan-500/40 flex items-center gap-2.5 text-xs sm:text-sm font-medium">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+            <span id="toastMessage">Berhasil!</span>
+        </div>
+    </div>
+
+    <script>
+        // 1. Efek Partikel Warna Cyan & Navy saat Elemen Interaktif Diklik
+        function triggerParticleBurst(e) {
+            const x = e.clientX || window.innerWidth / 2;
+            const y = e.clientY || window.innerHeight / 2;
+            const colors = ['#06b6d4', '#0891b2', '#0f172a', '#67e8f9', '#38bdf8'];
+
+            for (let i = 0; i < 14; i++) {
+                const particle = document.createElement('span');
+                particle.classList.add('click-particle');
+                
+                const size = Math.random() * 7 + 4;
+                const angle = (Math.PI * 2 * i) / 14 + (Math.random() * 0.4);
+                const velocity = Math.random() * 55 + 25;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.backgroundColor = colors[i % colors.length];
+                particle.style.setProperty('--tx', `${Math.cos(angle) * velocity}px`);
+                particle.style.setProperty('--ty', `${Math.sin(angle) * velocity}px`);
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 650);
+            }
+        }
+
+        // Pasang efek partikel ke semua tombol beranimasi
+        document.querySelectorAll('.btn-animated').forEach(btn => {
+            btn.addEventListener('click', triggerParticleBurst);
+        });
+
+        // 2. Fungsi Buka & Tutup Amplop Sampul
+        function openInvitation(e) {
+            triggerParticleBurst(e);
+            const overlay = document.getElementById('envelopeOverlay');
+            overlay.classList.add('opened');
+
+            // Animasi muncul bertahap untuk kartu konten utama
+            const items = document.querySelectorAll('.reveal-item');
+            items.forEach((item, idx) => {
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, 200 + idx * 140);
+            });
+        }
+
+        function reopenCover(e) {
+            triggerParticleBurst(e);
+            document.getElementById('envelopeOverlay').classList.remove('opened');
+        }
+
+        // 3. Toast Feedback Visual
+        let toastTimer;
+        function notifyUser(msg) {
+            const box = document.getElementById('toastBox');
+            document.getElementById('toastMessage').textContent = msg;
+            box.classList.remove('translate-y-20', 'opacity-0');
+            box.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.remove('translate-y-0', 'opacity-100');
+                box.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 4. Ubah Nama Penerima
+        function editGuestNamePrompt(e) {
+            triggerParticleBurst(e);
+            const dialog = document.getElementById('nameDialog');
+            dialog.classList.remove('hidden');
+            dialog.classList.add('flex');
+            document.getElementById('nameInputField').focus();
+        }
+
+        function closeNameDialog() {
+            const dialog = document.getElementById('nameDialog');
+            dialog.classList.add('hidden');
+            dialog.classList.remove('flex');
+        }
+
+        function applyGuestName(e) {
+            triggerParticleBurst(e);
+            const val = document.getElementById('nameInputField').value.trim();
+            if (val) {
+                document.getElementById('coverGuestName').textContent = val;
+                document.getElementById('mainGuestName').textContent = val;
+                notifyUser(`Nama penerima diperbarui: ${val}`);
+            }
+            closeNameDialog();
+        }
+
+        // 5. Salin Alamat & Bagikan Undangan
+        function copyLocationText(e) {
+            triggerParticleBurst(e);
+            const text = "Rumah Ibu Yacoba Ballo - Loak, Jl. Pisang, RT 026/RW009 - Oebobo";
+            copyToClipboard(text, "Alamat acara berhasil disalin!");
+        }
+
+        function copyShareLink(e) {
+            triggerParticleBurst(e);
+            const text = "Undangan Kumpul Keluarga - Victor James Lima, S. Tr. Par. | Selasa, 24 November 2026 pukul 18.00 WITA di Rumah Ibu Yacoba Ballo - Loak.";
+            copyToClipboard(text, "Teks undangan disalin untuk dibagikan!");
+        }
+
+        function copyToClipboard(str, successMsg) {
+            const el = document.createElement('textarea');
+            el.value = str;
+            document.body.appendChild(el);
+            el.select();
+            try {
+                document.execCommand('copy');
+                notifyUser(successMsg);
+            } catch (err) {
+                notifyUser("Gagal menyalin teks.");
+            }
+            document.body.removeChild(el);
+        }
+
+        // 7. Unduh Kalender & Smooth Scroll
+        function downloadCalendar(e) {
+            triggerParticleBurst(e);
+            const ics = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "BEGIN:VEVENT",
+                "DTSTART:20261124T100000Z",
+                "DTEND:20261124T140000Z",
+                "SUMMARY:Kumpul Keluarga - Victor James Lima, S. Tr. Par.",
+                "LOCATION:Rumah Ibu Yacoba Ballo - Loak, Jl. Pisang, RT 026/RW009 - Oebobo",
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ].join("\r\n");
+
+            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Kumpul_Keluarga_Victor_Lima.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+            notifyUser("Jadwal acara berhasil diunduh!");
+        }
+
+        function smoothScrollTo(e, id) {
+            e.preventDefault();
+            triggerParticleBurst(e);
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 8. Hitung Mundur Hari Acara
+        window.onload = function() {
+            const target = new Date('2026-11-24T18:00:00+08:00');
+            const now = new Date();
+            const days = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+            const label = document.getElementById('daysRemaining');
+            label.textContent = days > 0 ? `⏳ ${days} hari lagi menuju acara` : `🎉 Hari pelaksanaan acara`;
+        };
+    </script>
+</body>
+</html>
